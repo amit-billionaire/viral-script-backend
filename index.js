@@ -9,6 +9,13 @@ import ffmpegPath from "ffmpeg-static";
 
 ffmpeg.setFfmpegPath(ffmpegPath);
 
+process.on("uncaughtException", (err) => {
+  console.error("Uncaught Exception:", err);
+});
+
+process.on("unhandledRejection", (err) => {
+  console.error("Unhandled Rejection:", err);
+});
 // your other code below...
 
 dotenv.config();
@@ -26,6 +33,9 @@ const upload = multer({ dest: "uploads/" });
 
 app.post("/api/generate-script", upload.single("video"), async (req, res) => {
   try {
+    if (!req.file) {
+  return res.status(400).send("No file uploaded");
+}
     console.log("Video received:", req.file);
 
     const inputPath = req.file.path;
