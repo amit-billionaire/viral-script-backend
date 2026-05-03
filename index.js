@@ -130,7 +130,8 @@ Now analyze the images and generate the script.`,
     res.status(500).send("Server error");
   }
 });
+const PORT = process.env.PORT || 5000;
 
-app.listen(5000, () => {
-  console.log("Server running on http://localhost:5000");
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
