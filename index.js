@@ -2,9 +2,14 @@ import express from "express";
 import multer from "multer";
 import cors from "cors";
 import dotenv from "dotenv";
-import ffmpeg from "fluent-ffmpeg";
 import fs from "fs";
 import OpenAI from "openai";
+import ffmpeg from "fluent-ffmpeg";
+import ffmpegPath from "ffmpeg-static";
+
+ffmpeg.setFfmpegPath(ffmpegPath);
+
+// your other code below...
 
 dotenv.config();
 
@@ -13,7 +18,6 @@ const openai = new OpenAI({
 });
 
 // Set your ffmpeg path
-ffmpeg.setFfmpegPath("C:\\Users\\Nitro\\Downloads\\ffmpeg-8.1-essentials_build\\ffmpeg-8.1-essentials_build\\bin\\ffmpeg.exe");
 
 const app = express();
 app.use(cors());
