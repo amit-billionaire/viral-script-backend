@@ -27,7 +27,14 @@ const openai = new OpenAI({
 // Set your ffmpeg path
 
 const app = express();
-app.use(cors());
+
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST"],
+  allowedHeaders: ["Content-Type"]
+}));
+
+app.options("*", cors());
 
 const upload = multer({ dest: "uploads/" });
 
