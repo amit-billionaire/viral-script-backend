@@ -39,10 +39,16 @@ app.options("*", cors());
 const upload = multer({ dest: "uploads/" });
 
 app.post("/api/generate-script", upload.single("video"), async (req, res) => {
+  console.log("API HIT");
+  res.setTimeout(0);
+
   try {
     if (!req.file) {
-  return res.status(400).send("No file uploaded");
-}
+      console.log("NO FILE");
+      return res.status(400).send("No file uploaded");
+    }
+
+    console.log("FILE RECEIVED");
     console.log("Video received:", req.file);
 
     const inputPath = req.file.path;
@@ -52,9 +58,12 @@ app.post("/api/generate-script", upload.single("video"), async (req, res) => {
       fs.mkdirSync(framesFolder);
     }
 
+    console.log("STARTING FFMPEG");
+
     ffmpeg(inputPath)
       .output(`${framesFolder}/frame-%03d.jpg`)
       .outputOptions(["-vf", "fps=1"])
+
       .on("end", async () => {
         try {
           const files = fs.readdirSync(framesFolder);
@@ -62,9 +71,7 @@ app.post("/api/generate-script", upload.single("video"), async (req, res) => {
 
           const imageInputs = selectedFrames.map((file) => {
             const imagePath = `${framesFolder}/${file}`;
-            const imageBase64 = fs.readFileSync(imagePath, {
-              encoding: "base64",
-            });
+            const imageBase64 = fs.readFileSync(imagePath, "base64");
 
             return {
               type: "input_image",
@@ -138,7 +145,7 @@ Now analyze the images and generate the script.`,
         }
       })
       .on("error", (err) => {
-        console.error("FFmpeg error:", err);
+  console.error("FFMPEG CRASH:", err);
         res.status(500).send("Frame extraction error");
       })
       .run();
