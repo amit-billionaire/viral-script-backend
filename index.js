@@ -21,7 +21,9 @@ process.on("unhandledRejection", (err) => {
   console.error("Unhandled Rejection:", err);
 });
 
-const upload = multer({ dest: "uploads/" });
+const upload = multer({
+  storage: multer.memoryStorage()
+});
 
 app.post("/api/generate-script", upload.single("video"), async (req, res) => {
   console.log("API HIT");
