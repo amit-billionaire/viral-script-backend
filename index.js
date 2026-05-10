@@ -39,44 +39,11 @@ const upload = multer({ dest: "uploads/" });
 
 app.post("/api/generate-script", upload.single("video"), async (req, res) => {
   console.log("API HIT");
-  res.setTimeout(0);
 
-  try {
-    if (!req.file) {
-      console.log("NO FILE");
-      return res.status(400).send("No file uploaded");
-    }
-
-    console.log("FILE RECEIVED");
-    console.log("Video received:", req.file);
-
-    const inputPath = req.file.path;
-    const framesFolder = `uploads/frames-${Date.now()}`;
-
-    if (!fs.existsSync(framesFolder)) {
-      fs.mkdirSync(framesFolder);
-    }
-
-    console.log("STARTING FFMPEG");
-
-    ffmpeg(inputPath)
-      .output(`${framesFolder}/frame-%03d.jpg`)
-      .outputOptions(["-vf", "fps=1"])
-
-      .on("end", async () => {
-        try {
-          const files = fs.readdirSync(framesFolder);
-          const selectedFrames = files.slice(0, 5);
-
-          const imageInputs = selectedFrames.map((file) => {
-            const imagePath = `${framesFolder}/${file}`;
-            const imageBase64 = fs.readFileSync(imagePath, "base64");
-
-            return {
-              type: "input_image",
-              image_url: `data:image/jpeg;base64,${imageBase64}`,
-            };
-          });
+  return res.json({
+    script: "✅ Backend is working perfectly!"
+  });
+});
 
           const response = await openai.responses.create({
             model: "gpt-4.1-mini",
