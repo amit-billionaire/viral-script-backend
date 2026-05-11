@@ -13,20 +13,14 @@ app.use(cors({
   allowedHeaders: ["Content-Type"]
 }));
 
-process.on("uncaughtException", (err) => {
-  console.error("Uncaught Exception:", err);
-});
-
-process.on("unhandledRejection", (err) => {
-  console.error("Unhandled Rejection:", err);
-});
-
 const upload = multer({
   storage: multer.memoryStorage()
 });
+
 app.get("/", (req, res) => {
   res.send("Backend is live!");
 });
+
 app.post("/api/generate-script", upload.single("video"), async (req, res) => {
   console.log("API HIT");
 
