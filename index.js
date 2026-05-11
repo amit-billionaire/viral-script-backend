@@ -7,30 +7,49 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors({
-  origin: "*",
-  methods: ["GET", "POST"],
-  allowedHeaders: ["Content-Type"]
-}));
+app.use(cors());
+app.use(express.json());
 
+/* TEST ROUTE */
+app.get("/", (req, res) => {
+  res.send("Backend is LIVE!");
+});
+
+/* MULTER */
 const upload = multer({
   storage: multer.memoryStorage()
 });
 
-app.get("/", (req, res) => {
-  res.send("Backend is live!");
-});
-
+/* API ROUTE */
 app.post("/api/generate-script", upload.single("video"), async (req, res) => {
+
   console.log("API HIT");
 
-  return res.json({
-    script: "✅ Backend is working perfectly!"
-  });
+  try {
+
+    if (!req.file) {
+      return res.status(400).json({
+        error: "No video uploaded"
+      });
+    }
+
+    return res.json({
+      script: "✅ Backend is working perfectly!"
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    return res.status(500).json({
+      error: error.message
+    });
+  }
 });
 
-const PORT = process.env.PORT || 5000;
+/* SERVER */
+const PORT = process.env.PORT || 8080;
 
-app.listen(PORT, "0.0.0.0", () => {
+app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
